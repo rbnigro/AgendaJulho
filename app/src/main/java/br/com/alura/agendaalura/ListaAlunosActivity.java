@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.List;
 
 import br.com.alura.agendaalura.dao.AlunoDAO;
@@ -30,18 +31,21 @@ public class ListaAlunosActivity extends AppCompatActivity {
         listaAlunos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> lista, View item, int position, long id) {
-                Aluno aluno = (Aluno) lista.getItemAtPosition(position);
-                Toast.makeText(ListaAlunosActivity.this, "Aluno: " + aluno.getNome(), Toast.LENGTH_SHORT).show();
+                Aluno aluno = (Aluno) listaAlunos.getItemAtPosition(position);
+
+                Intent intentVaiProFormulario = new Intent(ListaAlunosActivity.this, FormularioActivity.class);
+                intentVaiProFormulario.putExtra("aluno", aluno);
+                startActivity(intentVaiProFormulario);
             }
         });
 
-        listaAlunos.setOnLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(ListaAlunosActivity.this, "Click Longo", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+        //listaAlunos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        //    @Override
+        //    public boolean onItemLongClick(AdapterView<?> lista, View item, int position, long id) {
+        //        Toast.makeText(ListaAlunosActivity.this, "Click Longo", Toast.LENGTH_SHORT).show();
+        //        return true;
+        //    }
+        //});
         
         Button novoAluno = findViewById(R.id.novo_aluno);
         novoAluno.setOnClickListener(new View.OnClickListener() {

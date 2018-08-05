@@ -1,5 +1,6 @@
 package br.com.alura.agendaalura;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -23,6 +24,12 @@ public class FormularioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_formulario);
 
         helper = new FormularioHelper(this);
+
+        Intent intent = getIntent();
+        Aluno aluno = (Aluno) intent.getSerializableExtra("aluno");
+        if (aluno != null) {
+            helper.preecheFormulario(aluno);
+        }
     }
 
     @Override
@@ -39,9 +46,13 @@ public class FormularioActivity extends AppCompatActivity {
             case R.id.menu_formulario_ok:
 
               Aluno aluno = helper.getAluno();
-
               AlunoDAO alunoDAO = new AlunoDAO(this);
-              alunoDAO.insere(aluno);
+
+              if (aluno.getId() != null) {
+                  alunoDAO.altera(aluno);
+              } else {
+                  alunoDAO.insere(aluno);
+              }
               alunoDAO.close();
 
               Toast.makeText(FormularioActivity.this,  aluno.getNome() + " Salvo", Toast.LENGTH_SHORT).show();

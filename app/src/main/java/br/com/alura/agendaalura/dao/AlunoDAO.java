@@ -15,19 +15,23 @@ import br.com.alura.agendaalura.modelo.Aluno;
 public class AlunoDAO extends SQLiteOpenHelper {
 
     public AlunoDAO(Context context) {
-        super(context, "Agenda", null, 1);
+        super(context, "Agenda", null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql ="CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL)";
+        String sql ="CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, foto TEXT)";
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS Alunos";
-        db.execSQL(sql);
+        String sql;
+        switch (oldVersion) {
+            case 2:
+            sql = "ALTER TABLE Alunos ADD COLUMN foto TEXT";
+            db.execSQL(sql);
+        }
     }
 
     public void insere(Aluno aluno) {
@@ -46,11 +50,13 @@ public class AlunoDAO extends SQLiteOpenHelper {
         dados.put("telefone", aluno.getTelefone());
         dados.put("site", aluno.getSite());
         dados.put("nota", aluno.getNota());
+        dados.put("foto", aluno.getFoto());
+
         return dados;
     }
 
     public List<Aluno>  buscaAlunos() {
-        String sql = "SELECT id, nome, endereco, telefone, site, nota FROM Alunos";
+        String sql = "SELECT id, nome, endereco, telefone, site, nota, foto FROM Alunos";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, null);
 
@@ -63,6 +69,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
             aluno.setTelefone(cursor.getString(cursor.getColumnIndex("telefone")));
             aluno.setSite(cursor.getString(cursor.getColumnIndex("site")));
             aluno.setNota(cursor.getDouble(cursor.getColumnIndex("nota")));
+            aluno.setFoto(cursor.getString(cursor.getColumnIndex("foto")));
 
             alunos.add(aluno);
         }

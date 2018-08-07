@@ -62,9 +62,10 @@ public class FormularioActivity extends AppCompatActivity {
         File arquivoFoto = new File(caminhoFoto);
 
         // essa parte muda no Android 7, estamos construindo uma URI para acessar a foto utilizando o FileProvider
+        // Colocar isso acima
         intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", arquivoFoto));
 
-        startActivityForResult(intent, 123);
+        startActivityForResult(intent, codigoCamera);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class FormularioActivity extends AppCompatActivity {
               }
               alunoDAO.close();
 
-              Toast.makeText(FormularioActivity.this,  aluno.getNome() + " Salvo", Toast.LENGTH_SHORT).show();
+             // Toast.makeText(FormularioActivity.this,  aluno.getNome() + " Salvo", Toast.LENGTH_SHORT).show();
 
               finish();
               break;

@@ -48,6 +48,8 @@ public class FormularioHelper {
         campoTelefone.setText(alunoLocal.getTelefone());
         campoSite.setText(alunoLocal.getSite());
         campoNota.setProgress(alunoLocal.getNota().intValue());
+        carregaImagem(alunoLocal.getFoto());
+
         carregaImagem(aluno.getFoto());
 
         this.aluno = alunoLocal;

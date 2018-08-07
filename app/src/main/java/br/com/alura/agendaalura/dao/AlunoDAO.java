@@ -15,23 +15,19 @@ import br.com.alura.agendaalura.modelo.Aluno;
 public class AlunoDAO extends SQLiteOpenHelper {
 
     public AlunoDAO(Context context) {
-        super(context, "Agenda", null, 2);
+        super(context, "Agenda", null, 8);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql ="CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, foto TEXT)";
+        String sql;
+        sql ="CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, foto TEXT)";
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql;
-        switch (oldVersion) {
-            case 2:
-            sql = "ALTER TABLE Alunos ADD COLUMN foto TEXT";
-            db.execSQL(sql);
-        }
+      //  deletaTabela();
     }
 
     public void insere(Aluno aluno) {
@@ -85,9 +81,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     public void altera(Aluno aluno) {
         SQLiteDatabase db = getWritableDatabase();
-
         ContentValues dados = pegaDadosAluno(aluno);
-
         String[] params = {aluno.getId().toString()};
         db.update("Alunos", dados, "id = ?", params);
     }
@@ -98,5 +92,11 @@ public class AlunoDAO extends SQLiteOpenHelper {
         int resultado = cursor.getCount();
         cursor.close();
         return resultado > 0;
+    }
+
+    public void deletaTabela() {
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = "DROP TABLE IF EXISTS Alunos;";
+        db.execSQL(sql);
     }
 }

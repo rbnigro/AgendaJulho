@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.List;
 
+import br.com.alura.agendaalura.adapter.AlunosAdapter;
 import br.com.alura.agendaalura.dao.AlunoDAO;
 import br.com.alura.agendaalura.modelo.Aluno;
 
@@ -46,14 +47,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
             }
         });
 
-        //listaAlunos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-        //    @Override
-        //    public boolean onItemLongClick(AdapterView<?> lista, View item, int position, long id) {
-        //        Toast.makeText(ListaAlunosActivity.this, "Click Longo", Toast.LENGTH_SHORT).show();
-        //        return true;
-        //    }
-        //});
-
         Button novoAluno = findViewById(R.id.novo_aluno);
         novoAluno.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +64,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         List<Aluno> alunos = alunoDAO.buscaAlunos();
         alunoDAO.close();
 
-        ArrayAdapter<Aluno> adapter = new ArrayAdapter<Aluno>(this, android.R.layout.simple_list_item_1, alunos);
+        AlunosAdapter adapter = new AlunosAdapter(this, alunos);
         listaAlunos.setAdapter(adapter);
     }
 

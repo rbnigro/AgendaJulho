@@ -23,12 +23,35 @@ import java.io.Serializable;
 import java.util.List;
 
 import br.com.alura.agendaalura.adapter.AlunosAdapter;
+import br.com.alura.agendaalura.converter.AlunoConverter;
 import br.com.alura.agendaalura.dao.AlunoDAO;
 import br.com.alura.agendaalura.modelo.Aluno;
 
 public class ListaAlunosActivity extends AppCompatActivity {
 
     private ListView listaAlunos;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_lista_alunos, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_enviar_notas:
+                AlunoDAO alunoDAO = new AlunoDAO(this);
+                List<Aluno> alunos = alunoDAO.buscaAlunos();
+                alunoDAO.close();
+
+                AlunoConverter conversor = new AlunoConverter();
+                String json = conversor.converterParaJSON(alunos);
+
+                Toast.makeText(this, json, Toast.LENGTH_LONG).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

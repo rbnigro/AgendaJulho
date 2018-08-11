@@ -34,6 +34,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_lista_alunos, menu);
+
         return true;
     }
 
@@ -41,14 +42,12 @@ public class ListaAlunosActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_enviar_notas:
-                AlunoDAO alunoDAO = new AlunoDAO(this);
-                List<Aluno> alunos = alunoDAO.buscaAlunos();
-                alunoDAO.close();
-
-                AlunoConverter conversor = new AlunoConverter();
-                String json = conversor.converterParaJSON(alunos);
-
-                Toast.makeText(this, json, Toast.LENGTH_LONG).show();
+                new EnviaAlunosTask(this).execute();
+                break;
+            case R.id.menu_baixar_provas:
+                break;
+            case R.id.menu_mapa:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

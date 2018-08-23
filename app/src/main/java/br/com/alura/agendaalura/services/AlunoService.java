@@ -8,5 +8,5 @@ import retrofit2.http.POST;
 public interface AlunoService {
 
     @POST("aluno")
-    Call insere(@Body Aluno aluno);
+    Call<String> insere(@Body Aluno aluno);
 }

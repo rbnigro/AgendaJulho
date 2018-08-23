@@ -2,27 +2,26 @@ package br.com.alura.agendaalura;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
 
 import br.com.alura.agendaalura.dao.AlunoDAO;
 import br.com.alura.agendaalura.modelo.Aluno;
-import br.com.alura.agendaalura.tasks.InsereAlunoTask;
+import br.com.alura.agendaalura.retrofit.RetrofitInicializador;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FormularioActivity extends AppCompatActivity {
 
@@ -102,9 +101,21 @@ public class FormularioActivity extends AppCompatActivity {
               }
               alunoDAO.close();
 
-              new InsereAlunoTask(aluno).execute();
+              // new InsereAlunoTask(aluno).execute();
+                Call call = new RetrofitInicializador().getAlunoService().insere(aluno);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onResponse(Call call, Response response) {
+                        Log.i("onResponse", "requisição com sucesso");
+                    }
 
-             Toast.makeText(FormularioActivity.this,  aluno.getNome() + " Salvo", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onFailure(Call call, Throwable t) {
+                        Log.e("onFailure", "requisição falhou");
+                    }
+                }); // tread assincrona encapsulada
+
+                Toast.makeText(FormularioActivity.this,  aluno.getNome() + " Salvo", Toast.LENGTH_SHORT).show();
 
               finish();
               break;

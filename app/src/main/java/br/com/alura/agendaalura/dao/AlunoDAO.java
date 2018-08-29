@@ -21,7 +21,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql;
-        sql ="CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, foto TEXT)";
+        sql ="CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, caminhoFoto TEXT)";
         db.execSQL(sql);
     }
 
@@ -35,7 +35,8 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
         ContentValues dados = pegaDadosAluno(aluno);
 
-        db.insert("Alunos", null, dados);
+        long id = db.insert("Alunos", null, dados);
+        aluno.setId(id);
     }
 
     @NonNull
@@ -46,13 +47,13 @@ public class AlunoDAO extends SQLiteOpenHelper {
         dados.put("telefone", aluno.getTelefone());
         dados.put("site", aluno.getSite());
         dados.put("nota", aluno.getNota());
-        dados.put("foto", aluno.getFoto());
+        dados.put("caminhoFoto", aluno.getCaminhoFoto());
 
         return dados;
     }
 
     public List<Aluno>  buscaAlunos() {
-        String sql = "SELECT id, nome, endereco, telefone, site, nota, foto FROM Alunos";
+        String sql = "SELECT id, nome, endereco, telefone, site, nota, caminhoFoto FROM Alunos";
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, null);
 
@@ -65,7 +66,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
             aluno.setTelefone(cursor.getString(cursor.getColumnIndex("telefone")));
             aluno.setSite(cursor.getString(cursor.getColumnIndex("site")));
             aluno.setNota(cursor.getDouble(cursor.getColumnIndex("nota")));
-            aluno.setFoto(cursor.getString(cursor.getColumnIndex("foto")));
+            aluno.setCaminhoFoto(cursor.getString(cursor.getColumnIndex("caminhoFoto")));
 
             alunos.add(aluno);
         }

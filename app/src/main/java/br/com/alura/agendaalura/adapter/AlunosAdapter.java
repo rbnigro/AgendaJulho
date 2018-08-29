@@ -58,7 +58,7 @@ public class AlunosAdapter extends BaseAdapter {
         campoTelefone.setText(aluno.getTelefone());
 
         ImageView campoFoto = view.findViewById(R.id.item_foto);
-        String caminhoFoto = aluno.getFoto();
+        String caminhoFoto = aluno.getCaminhoFoto();
         if (caminhoFoto != null){
             Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
             Bitmap bitmapReduzido = Bitmap.createScaledBitmap(bitmap, 100,100,true);

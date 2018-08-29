@@ -1,16 +1,19 @@
 package br.com.alura.agendaalura.modelo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class Aluno implements Serializable {
 
+    @JsonProperty("idCliente")
     private Long id;
     private String nome;
     private String endereco;
     private String telefone;
     private String site;
     private Double nota;
-    private String foto;
+    private String caminhoFoto;
 
     // alt + ins = gerar getter ans setter
 
@@ -62,12 +65,12 @@ public class Aluno implements Serializable {
         this.nota = nota;
     }
 
-    public String getFoto() {
-        return foto;
+    public String getCaminhoFoto() {
+        return caminhoFoto;
     }
 
-    public void setFoto(String foto) {
-        this.foto = foto;
+    public void setCaminhoFoto(String caminhoFoto) {
+        this.caminhoFoto = caminhoFoto;
     }
 
     @Override

@@ -13,11 +13,6 @@ public class WebClient {
 
     private String endereco;
 
-    public void insere(String json) {
-        endereco = "http://10.0.5.120:8080/api/aluno";
-        realizaConexao(json, endereco);
-    }
-
     public String post(String json)  {
 
         endereco = "https://www.caelum.com.br/mobile";

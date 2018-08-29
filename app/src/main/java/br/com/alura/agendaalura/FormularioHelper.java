@@ -37,7 +37,7 @@ public class FormularioHelper {
         aluno.setTelefone(campoTelefone.getText().toString());
         aluno.setSite(campoSite.getText().toString());
         aluno.setNota(Double.valueOf(campoNota.getProgress()));
-        aluno.setFoto((String) campoFoto.getTag());
+        aluno.setCaminhoFoto((String) campoFoto.getTag());
 
         return aluno;
     }
@@ -48,9 +48,9 @@ public class FormularioHelper {
         campoTelefone.setText(alunoLocal.getTelefone());
         campoSite.setText(alunoLocal.getSite());
         campoNota.setProgress(alunoLocal.getNota().intValue());
-        carregaImagem(alunoLocal.getFoto());
+        carregaImagem(alunoLocal.getCaminhoFoto());
 
-        carregaImagem(aluno.getFoto());
+        carregaImagem(aluno.getCaminhoFoto());
 
         this.aluno = alunoLocal;
     }

@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Response;
+
 import java.io.File;
 
 import br.com.alura.agendaalura.dao.AlunoDAO;
@@ -21,7 +23,6 @@ import br.com.alura.agendaalura.modelo.Aluno;
 import br.com.alura.agendaalura.retrofit.RetrofitInicializador;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FormularioActivity extends AppCompatActivity {
 
@@ -101,21 +102,20 @@ public class FormularioActivity extends AppCompatActivity {
               }
               alunoDAO.close();
 
-              // new InsereAlunoTask(aluno).execute();
-                Call call = new RetrofitInicializador().getAlunoService().insere(aluno);
-                call.enqueue(new Callback() {
-                    @Override
-                    public void onResponse(Call call, Response response) {
-                        Log.i("onResponse", "requisição com sucesso");
-                    }
+              Call call = new RetrofitInicializador().getAlunoService().insere(aluno);
+              call.enqueue(new Callback() {
+                               @Override
+                               public void onResponse(Call call, retrofit2.Response response) {
+                                   Log.i("onResponse", "requisição com sucesso");
+                               }
 
-                    @Override
-                    public void onFailure(Call call, Throwable t) {
-                        Log.e("onFailure", "requisição falhou");
-                    }
-                }); // tread assincrona encapsulada
+                               @Override
+                               public void onFailure(Call call, Throwable t) {
+                                   Log.e("onFailure", "requisição falhou");
+                               }
+                           }); // tread assincrona encapsulada
 
-                Toast.makeText(FormularioActivity.this,  aluno.getNome() + " Salvo", Toast.LENGTH_SHORT).show();
+              Toast.makeText(FormularioActivity.this,  aluno.getNome() + " Salvo", Toast.LENGTH_SHORT).show();
 
               finish();
               break;

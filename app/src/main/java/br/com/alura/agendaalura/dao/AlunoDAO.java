@@ -15,7 +15,7 @@ import br.com.alura.agendaalura.modelo.Aluno;
 public class AlunoDAO extends SQLiteOpenHelper {
 
     public AlunoDAO(Context context) {
-        super(context, "Agenda", null, 1);
+        super(context, "Agenda", null, 3);
     }
 
     @Override
@@ -27,7 +27,21 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-      //  deletaTabela();
+        switch (oldVersion) {
+            case 1:
+                String sqlCriaTabela ="CREATE TABLE Alunos_novo (id CHAR(36) PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, caminhoFoto TEXT)";
+                db.execSQL(sqlCriaTabela);
+
+                String sqlInsere = "INSERT INTO Alunos_novo (id, nome, endereco, telefone, site, nota, caminhoFoto) " +
+                        "SELECT id, nome, endereco, telefone, site, nota, caminhoFoto FROM Alunos";
+                db.execSQL(sqlInsere);
+
+                String sqlApagaTabela = "DROP TABLE Alunos";
+                db.execSQL(sqlApagaTabela);
+
+                String sqlRenomeia = "ALTER TABLE Alunos_novo RENAME TO Alunos";
+                db.execSQL(sqlRenomeia);
+        }
     }
 
     public void insere(Aluno aluno) {

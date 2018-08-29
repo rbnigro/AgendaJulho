@@ -4,28 +4,24 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.provider.Browser;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.List;
 
 import br.com.alura.agendaalura.adapter.AlunosAdapter;
-import br.com.alura.agendaalura.converter.AlunoConverter;
 import br.com.alura.agendaalura.dao.AlunoDAO;
 import br.com.alura.agendaalura.modelo.Aluno;
+import br.com.alura.agendaalura.tasks.EnviaAlunosTask;
 
 public class ListaAlunosActivity extends AppCompatActivity {
 
@@ -84,6 +80,11 @@ public class ListaAlunosActivity extends AppCompatActivity {
     private void carregaLista() {
         AlunoDAO alunoDAO = new AlunoDAO(this);
         List<Aluno> alunos = alunoDAO.buscaAlunos();
+
+        for (Aluno aluno : alunos) {
+            Log.i("id Aluno", String.valueOf(aluno.getId().toString()));
+        }
+
         alunoDAO.close();
 
         AlunosAdapter adapter = new AlunosAdapter(this, alunos);

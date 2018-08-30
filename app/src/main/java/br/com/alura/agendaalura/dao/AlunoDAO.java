@@ -9,13 +9,14 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import br.com.alura.agendaalura.modelo.Aluno;
 
 public class AlunoDAO extends SQLiteOpenHelper {
 
     public AlunoDAO(Context context) {
-        super(context, "Agenda", null, 3);
+        super(context, "Agenda", null, 4);
     }
 
     @Override
@@ -41,7 +42,23 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
                 String sqlRenomeia = "ALTER TABLE Alunos_novo RENAME TO Alunos";
                 db.execSQL(sqlRenomeia);
+
+            case 3:
+                String buscaAlunos = "SELECT * FROM Alunos ";
+                Cursor cursor = db.rawQuery(buscaAlunos, null);
+                List<Aluno> alunos = populaAlunos(cursor);
+
+                String atualizaIdAluno = "UPDATE Alunos SET id = ? WHERE id = ?";
+
+                for (Aluno aluno : alunos) {
+                    db.execSQL(atualizaIdAluno, new String[] { geraUUID(), aluno.getId() });
+                }
+
         }
+    }
+
+    private String geraUUID() {
+        return UUID.randomUUID().toString();
     }
 
     public void insere(Aluno aluno) {
@@ -49,8 +66,8 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
         ContentValues dados = pegaDadosAluno(aluno);
 
-        long id = db.insert("Alunos", null, dados);
-        aluno.setId(id);
+        db.insert("Alunos", null, dados);
+        // aluno.setId(id);
     }
 
     @NonNull
@@ -71,10 +88,18 @@ public class AlunoDAO extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, null);
 
+        List<Aluno> alunos = populaAlunos(cursor);
+        cursor.close();
+
+        return alunos;
+    }
+
+    @NonNull
+    private List<Aluno> populaAlunos(Cursor cursor) {
         List<Aluno> alunos = new ArrayList<Aluno>();
         while (cursor.moveToNext()) {
             Aluno aluno = new Aluno();
-            aluno.setId(cursor.getLong(cursor.getColumnIndex("id")));
+            aluno.setId(cursor.getString(cursor.getColumnIndex("id")));
             aluno.setNome(cursor.getString(cursor.getColumnIndex("nome")));
             aluno.setEndereco(cursor.getString(cursor.getColumnIndex("endereco")));
             aluno.setTelefone(cursor.getString(cursor.getColumnIndex("telefone")));
@@ -84,10 +109,9 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
             alunos.add(aluno);
         }
-        cursor.close();
-
         return alunos;
     }
+
     public void deleta(Aluno aluno) {
         SQLiteDatabase db = getWritableDatabase();
         String[] params = {aluno.getId().toString()};

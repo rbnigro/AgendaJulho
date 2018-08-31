@@ -14,8 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Response;
-
 import java.io.File;
 
 import br.com.alura.agendaalura.dao.AlunoDAO;

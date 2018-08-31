@@ -19,7 +19,7 @@ public class RetrofitInicializador {
         client.addInterceptor(interceptor);
 
         // com.squareup.retrofit2:converter-jackson
-        String sIP = "192.168.0.13"; // "10.0.5.120";
+        String sIP = "10.0.5.120"; // "192.168.0.13";
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + sIP + ":8080/api/")
                 .addConverterFactory(JacksonConverterFactory.create())

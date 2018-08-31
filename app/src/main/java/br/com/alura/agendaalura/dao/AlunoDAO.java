@@ -16,45 +16,18 @@ import br.com.alura.agendaalura.modelo.Aluno;
 public class AlunoDAO extends SQLiteOpenHelper {
 
     public AlunoDAO(Context context) {
-        super(context, "Agenda", null, 4);
+        super(context, "Agenda", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql;
-        sql ="CREATE TABLE Alunos (id INTEGER PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, caminhoFoto TEXT)";
+        sql ="CREATE TABLE Alunos (id CHAR(36) PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, caminhoFoto TEXT)";
         db.execSQL(sql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        switch (oldVersion) {
-            case 1:
-                String sqlCriaTabela ="CREATE TABLE Alunos_novo (id CHAR(36) PRIMARY KEY, nome TEXT NOT NULL, endereco TEXT, telefone, site TEXT, nota REAL, caminhoFoto TEXT)";
-                db.execSQL(sqlCriaTabela);
-
-                String sqlInsere = "INSERT INTO Alunos_novo (id, nome, endereco, telefone, site, nota, caminhoFoto) " +
-                        "SELECT id, nome, endereco, telefone, site, nota, caminhoFoto FROM Alunos";
-                db.execSQL(sqlInsere);
-
-                String sqlApagaTabela = "DROP TABLE Alunos";
-                db.execSQL(sqlApagaTabela);
-
-                String sqlRenomeia = "ALTER TABLE Alunos_novo RENAME TO Alunos";
-                db.execSQL(sqlRenomeia);
-
-            case 3:
-                String buscaAlunos = "SELECT * FROM Alunos ";
-                Cursor cursor = db.rawQuery(buscaAlunos, null);
-                List<Aluno> alunos = populaAlunos(cursor);
-
-                String atualizaIdAluno = "UPDATE Alunos SET id = ? WHERE id = ?";
-
-                for (Aluno aluno : alunos) {
-                    db.execSQL(atualizaIdAluno, new String[] { geraUUID(), aluno.getId() });
-                }
-
-        }
     }
 
     private String geraUUID() {
@@ -63,16 +36,21 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     public void insere(Aluno aluno) {
         SQLiteDatabase db = getWritableDatabase();
-
+        InsereIdSeNecessario(aluno);
         ContentValues dados = pegaDadosAluno(aluno);
-
         db.insert("Alunos", null, dados);
-        // aluno.setId(id);
+    }
+
+    private void InsereIdSeNecessario(Aluno aluno) {
+        if (aluno.getId() == null) {
+            aluno.setId(geraUUID());
+        }
     }
 
     @NonNull
     private ContentValues pegaDadosAluno(Aluno aluno) {
         ContentValues dados = new ContentValues();
+        dados.put("id", aluno.getId());
         dados.put("nome", aluno.getNome());
         dados.put("endereco", aluno.getEndereco());
         dados.put("telefone", aluno.getTelefone());
@@ -133,9 +111,21 @@ public class AlunoDAO extends SQLiteOpenHelper {
         return resultado > 0;
     }
 
-    public void deletaTabela() {
-        SQLiteDatabase db = getWritableDatabase();
-        String sql = "DROP TABLE IF EXISTS Alunos;";
-        db.execSQL(sql);
+    public void sincroniza(List<Aluno> alunos) {
+        for (Aluno aluno : alunos) {
+           if (existe(aluno)) {
+                altera(aluno);
+           } else {
+               insere(aluno);
+           }
+        }
+    }
+
+    private boolean existe(Aluno aluno) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "SELECT id FROM Alunos WHERE id = ? LIMIT 1";
+        Cursor cursor = db.rawQuery(sql, new String[] {aluno.getId()});
+        int intQtd = cursor.getCount();
+        return intQtd > 0;
     }
 }

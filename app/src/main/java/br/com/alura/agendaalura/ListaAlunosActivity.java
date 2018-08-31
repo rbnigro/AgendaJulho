@@ -20,8 +20,13 @@ import java.util.List;
 
 import br.com.alura.agendaalura.adapter.AlunosAdapter;
 import br.com.alura.agendaalura.dao.AlunoDAO;
+import br.com.alura.agendaalura.dto.AlunoSync;
 import br.com.alura.agendaalura.modelo.Aluno;
+import br.com.alura.agendaalura.retrofit.RetrofitInicializador;
 import br.com.alura.agendaalura.tasks.EnviaAlunosTask;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListaAlunosActivity extends AppCompatActivity {
 
@@ -82,7 +87,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
         List<Aluno> alunos = alunoDAO.buscaAlunos();
 
         for (Aluno aluno : alunos) {
-            Log.i("id Aluno", String.valueOf(aluno.getId().toString()));
+            Log.i("id Aluno", String.valueOf(aluno.getId()));
         }
 
         alunoDAO.close();
@@ -94,6 +99,24 @@ public class ListaAlunosActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().lista();
+
+        call.enqueue(new Callback<AlunoSync>() {
+            @Override
+            public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
+                AlunoSync alunoSync = response.body();
+                AlunoDAO alunoDAO = new AlunoDAO(ListaAlunosActivity.this);
+                alunoDAO.sincroniza(alunoSync.getAlunos());
+                alunoDAO.close();
+                carregaLista();
+            }
+
+            @Override
+            public void onFailure(Call<AlunoSync> call, Throwable t) {
+                Log.e("onFailure chamado", t.getMessage());
+            }
+        }); // thread assincrona
 
         carregaLista();
     }

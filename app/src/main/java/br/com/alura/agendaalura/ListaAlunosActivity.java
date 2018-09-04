@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -80,6 +81,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
         });
 
         registerForContextMenu(listaAlunos);
+
+        buscaAlunos();
     }
 
     private void carregaLista() {
@@ -100,6 +103,10 @@ public class ListaAlunosActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        carregaLista();
+    }
+
+    private void buscaAlunos() {
         Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().lista();
 
         call.enqueue(new Callback<AlunoSync>() {
@@ -117,8 +124,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
                 Log.e("onFailure chamado", t.getMessage());
             }
         }); // thread assincrona
-
-        carregaLista();
     }
 
     @Override
@@ -167,11 +172,23 @@ public class ListaAlunosActivity extends AppCompatActivity {
         deletar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                AlunoDAO alunoDAO  = new AlunoDAO(ListaAlunosActivity.this);
-                alunoDAO.deleta(aluno);
-                alunoDAO.close();
 
-                carregaLista();
+                Call<Void> call = new RetrofitInicializador().getAlunoService().deleta(aluno.getId());
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        AlunoDAO alunoDAO  = new AlunoDAO(ListaAlunosActivity.this);
+                        alunoDAO.deleta(aluno);
+                        alunoDAO.close();
+                        carregaLista();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(ListaAlunosActivity.this, "Não foi possível remover o Aluno", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 return false;
             }
         });

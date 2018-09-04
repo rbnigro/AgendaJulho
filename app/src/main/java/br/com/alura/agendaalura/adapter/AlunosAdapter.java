@@ -37,7 +37,7 @@ public class AlunosAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return Long.parseLong(alunos.get(position).getId());
+        return 0; // Long.parseLong(alunos.get(position).getId());
     }
 
     @Override
